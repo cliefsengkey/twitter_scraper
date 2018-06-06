@@ -37,13 +37,13 @@ import errno
 import re
 import collections
 from collections import Counter
-import JSdistance_EN_wiki as cs
 import random
+
 #Twitter API credentials
-consumer_key = "hNpaR5AUz78qnt4XurQ2QtySg"
-consumer_secret = "JJb6lrTJtk0euoFv2bKps3j9Lu4GmYgSpVZIgAHgMI08lWZai6"
-access_key = "49872827-OBzuLDnA51nGjhsEslUkoqrJaMhXlDtvMn3nGLbVj"
-access_secret = "zbPJzx37cYF2ZV5zJu49ZVyJ1oGiUFChxUwleqTsmahYf"
+consumer_key = "YOUR_CONSUMER_KEY"
+consumer_secret = "YOUR_CONSUMER_SECRET"
+access_key = "YOUR_ACCESS_KEY"
+access_secret = "YOUR_ACCESS_SECRET"
 
 #authorize twitter, initialize tweepy
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -100,35 +100,10 @@ def get_all_tweets(screen_name):
 	#save most recent tweets
 	alltweets.extend(new_tweets)
 	
-	#save the id of the oldest tweet less one
-	# oldest = alltweets[-1].id - 1
-	
-	# #to allow access 3240 tweets : keep grabbing tweets until there are no tweets left to grab
-	# while len(new_tweets) > 0:
-	# 	print "getting tweets before %s" % (oldest)
-		
-	# 	#all subsiquent requests use the max_id param to prevent duplicates
-	# 	new_tweets = api.user_timeline(screen_name = screen_name,count=100,max_id=oldest)
-		
-	# 	#save most recent tweets
-	# 	alltweets.extend(new_tweets)
-		
-	# 	#update the id of the oldest tweet less one
-	# 	oldest = alltweets[-1].id - 1
-		
-	# 	print "...%s tweets downloaded so far" % (len(alltweets))
-	
 	#transform the tweepy tweets into a 2D array that will populate the csv	
 	outtweets = [[tweet.id_str, tweet.created_at, tweet.text.encode("utf-8"), tweet.retweeted, tweet.favorited, tweet.retweet_count] for tweet in alltweets]
 	
 	return outtweets
-	#write the csv	
-	# with open('%s_tweets.csv' % screen_name, 'wb') as f:
-	# 	writer = csv.writer(f)
-	# 	# writer.writerow(["id","created_at","text"])
-	# 	writer.writerows(outtweets)
-	
-	# pass
 
 def get_text_tweets(screen_name):
 	#Twitter only allows access to a users most recent 3240 tweets with this method
@@ -164,20 +139,7 @@ def getFollowers(screen_name):
 				f.write(str(user.screen_name) + '\n')
 				f.close()
 			print "continuing.please wait..."
-
-			# print user.screen_name
-			# all_tweets = get_all_tweets(user.screen_name)
-			# if all_tweets:
-			# 	preprocessed_tweet = cs.slangCleanser(all_tweets)
-			# 	preprocessed_tweet = cs.lemmatizingText(preprocessed_tweet)
-			# 	# print preprocessed_tweet
-			# 	# break
-
-			# 	cInterest = cs.cInterest(preprocessed_tweet,ldaScoreA)
-			# 	print user.screen_name, ' : ', cInterest
-				# if jsd_score*100 <= 60:
-				# 	target_user.append(user.screen_name)
-
+			
 		except tweepy.TweepError:
 			print("Failed to run the command on that user, Skipping...")
 			time.sleep(60 * 15)
@@ -185,79 +147,6 @@ def getFollowers(screen_name):
 			pass
 		except StopIteration:
 			break
-
-def getUserAttributes(name):
-	# target_user = []
-	for user in tweepy.Cursor(api.friends, screen_name=name, count = 2).items():
-		#to avoid tweepy.TweepError: when The particular user had protected tweets
-		try:
-			# write the csv	
-
-			print user
-
-			# if user.verified and count_foll.followers_count:
-			# 	with open('IDenceFinder_datasets/'+str(name)+'/'+str(name) +'_friends.csv', 'a') as f:
-			# 		f.write(str(user.screen_name) + '\n')
-			# 		f.close()
-			# 	print "continuing.please wait..."
-
-			# print user.screen_name
-			# all_tweets = get_all_tweets(user.screen_name)
-			# if all_tweets:
-			# 	preprocessed_tweet = cs.slangCleanser(all_tweets)
-			# 	preprocessed_tweet = cs.lemmatizingText(preprocessed_tweet)
-			# 	# print preprocessed_tweet
-			# 	# break
-
-			# 	cInterest = cs.cInterest(preprocessed_tweet,ldaScoreA)
-			# 	print user.screen_name, ' : ', cInterest
-				# if jsd_score*100 <= 60:
-				# 	target_user.append(user.screen_name)
-		except tweepy.TweepError:
-			print("Failed to run the command on that user, Skipping...")
-			time.sleep(60 * 15)
-			# continue
-			pass
-		except StopIteration:
-			break
-		break
-
-def getFriends(name):
-	# target_user = []
-	for user in tweepy.Cursor(api.friends, screen_name=name, count = 200).items():
-		#to avoid tweepy.TweepError: when The particular user had protected tweets
-		try:
-			# write the csv	
-
-			print user.screen_name, user.verified, user.followers_count
-
-			# if user.verified and count_foll.followers_count:
-			# 	with open('IDenceFinder_datasets/'+str(name)+'/'+str(name) +'_friends.csv', 'a') as f:
-			# 		f.write(str(user.screen_name) + '\n')
-			# 		f.close()
-			# 	print "continuing.please wait..."
-
-			# print user.screen_name
-			# all_tweets = get_all_tweets(user.screen_name)
-			# if all_tweets:
-			# 	preprocessed_tweet = cs.slangCleanser(all_tweets)
-			# 	preprocessed_tweet = cs.lemmatizingText(preprocessed_tweet)
-			# 	# print preprocessed_tweet
-			# 	# break
-
-			# 	cInterest = cs.cInterest(preprocessed_tweet,ldaScoreA)
-			# 	print user.screen_name, ' : ', cInterest
-				# if jsd_score*100 <= 60:
-				# 	target_user.append(user.screen_name)
-
-		except tweepy.TweepError:
-			print("Failed to run the command on that user, Skipping...")
-			time.sleep(60 * 15)
-			# continue
-			pass
-		except StopIteration:
-			break
-
 
 def countHashtags(screen_name,user):
 	with open(str(screen_name)+'_datasets/'+str(user)+'/'+ str(user) +'_hashtags.txt') as f:
@@ -516,20 +405,7 @@ def scrapTweets(screen_name):
 
 if __name__ == '__main__':
 
-	userdataset2 = ['whussupfoot','valmaidearden','dVbryann','Todd_The_Fox','daniellejade198']
+	userdataset2 = ['whussupfoot','valmaidearden']
 	for user in userdataset2:
 		print user
 		scrapTweets(user)
-	# getUserAttributes("cliefsengkey")
-	# randomSample("Europ4Americans")
-	# getNumberOfFollowers("Europ4Americans")
-	# countDatasets()
-	# getNumberOfRT()
-	# getDescOfFollowers()
-	# getNumberOfFollowers()
-	# getFollowersTweets()
-	# getUserFollowers()
-	# countHashtags()
-	# searchHashtags()
-	# searchMentions()
-	# hashtagGenerator()
